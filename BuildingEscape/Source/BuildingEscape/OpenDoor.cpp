@@ -37,13 +37,10 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (GetTotalMassOfActorOnPlate() > 50.f) {
-		OpenDoor();
-		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
-	}
-
-	if ((GetWorld()->GetTimeSeconds() - LastDoorOpenTime)  > DoorCloseDelay) {
-		CloseDoor();
+	if (GetTotalMassOfActorOnPlate() > TriggerMass) {
+		OnOpen.Broadcast();
+	} else {
+		OnClose.Broadcast();
 	}
 
 }
@@ -63,20 +60,6 @@ float UOpenDoor::GetTotalMassOfActorOnPlate() {
 	UE_LOG(LogTemp, Warning, TEXT("Total Mass: %f"), TotalMass);
 
 	return TotalMass;
-}
-
-void UOpenDoor::OpenDoor()
-{
-	if (!Owner) return;
-	Owner->SetActorRotation(FRotator(0.f, OpenAngle, 0.f));
-
-}
-
-void UOpenDoor::CloseDoor()
-{
-	if (!Owner) return;
-	Owner->SetActorRotation(FRotator(0.f, 0.f, 0.f));
-
 }
 
 
