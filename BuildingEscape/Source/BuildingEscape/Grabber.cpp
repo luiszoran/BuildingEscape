@@ -29,7 +29,7 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	if (!PhysicsHandle) return;
 	if (PhysicsHandle->GrabbedComponent) {
 		PhysicsHandle->SetTargetLocation(GetReachLineEnd());
 	}
@@ -58,13 +58,16 @@ void UGrabber::Grab() {
 	auto HitResult = GetFirstPhysicsBodyInReach();
 	auto ComponentToGrab = HitResult.GetComponent();
 	auto ActorHit = HitResult.GetActor();
-	
+
+	if (!PhysicsHandle) return;
 	if (ActorHit)
 		PhysicsHandle->GrabComponent(ComponentToGrab, NAME_None, ComponentToGrab->GetOwner()->GetActorLocation(), true);
 }
 
 void UGrabber::Release() {
 	UE_LOG(LogTemp, Error, TEXT("%s Grab Released"), *GetOwner()->GetName());
+
+	if (!PhysicsHandle) return;
 	PhysicsHandle->ReleaseComponent();
 }
 
